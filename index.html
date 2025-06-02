@@ -962,13 +962,18 @@
                         cell.textContent = '✕';
                         cell.classList.add('unavailable');
                     }
-                    // 月・水の15:01~19:29は✕にする（優先的にチェック）
-                    if ((slotStart.getDay() === 1 || slotStart.getDay() === 3) && 
-                        (slotStart.getHours() > 15 || (slotStart.getHours() === 15 && slotStart.getMinutes() >= 0)) &&
-                        (slotStart.getHours() < 19 || (slotStart.getHours() === 19 && slotStart.getMinutes() <= 29))) {
-                        cell.textContent = '✕';
-                        cell.classList.add('unavailable');
-                    }
+// 月・水の13:00〜13:30 または 15:00〜19:29 は✕にする（優先的にチェック）
+if ((slotStart.getDay() === 1 || slotStart.getDay() === 3) &&
+    (
+        // 13:00〜13:30の範囲
+        (slotStart.getHours() === 13 && slotStart.getMinutes() >= 0 && slotStart.getMinutes() <= 29) ||
+        // 15:00〜19:29の範囲
+        (slotStart.getHours() > 15 || (slotStart.getHours() === 15 && slotStart.getMinutes() >= 0)) &&
+        (slotStart.getHours() < 19 || (slotStart.getHours() === 19 && slotStart.getMinutes() <= 29))
+    )) {
+    cell.textContent = '✕';
+    cell.classList.add('unavailable');
+}
                     // 日曜日、火曜日、木曜日、金曜日、土曜日で、営業日ではない場合
                     else if ([0, 2, 4, 5, 6].includes(slotStart.getDay()) && !isBusinessDay && businessEventTimes.length === 0) {
                         cell.textContent = '✕';
